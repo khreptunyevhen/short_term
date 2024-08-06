@@ -1,13 +1,10 @@
-# import functions
 from helpers import combine_excel_files, import_to_excel, filter_by_month, filter_by_status, group_and_sum
-
-# import variables
-from variables import DATE_FOR_REPORT, RESERVATION_STATUS, links_cb_transactions
+from variables import DATE_FOR_REPORT, RESERVATION_STATUS, CB_TRANSACTION_FILES
 
 report_name = f"{DATE_FOR_REPORT['year']}{DATE_FOR_REPORT['month']} - Transaction summary"
 cb_reservations_output_path = "C:/projects/monthly_income/short_term/ota_marketing"
 
-combined_cb_transactions = combine_excel_files(links_cb_transactions)
+combined_cb_transactions = combine_excel_files(CB_TRANSACTION_FILES)
 
 filtered_by_month = filter_by_month(DATE_FOR_REPORT['month'], "Check-In", "Check-Out", combined_cb_transactions)
 
