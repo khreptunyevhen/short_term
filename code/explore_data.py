@@ -1,5 +1,5 @@
 import pandas as pd
-from helpers import import_file, merge_left, get_combine_excel_file
+from helpers import import_to_excel, merge_with_selected_columns, combine_excel_files
 from variables import DATE_FOR_REPORT
 
 cb_reservations = pd.read_excel(f"C:/projects/monthly_income/short_term/ota_marketing/{DATE_FOR_REPORT["year"]}{DATE_FOR_REPORT["month"]} - Reservations with OTA marketing.xlsx")
@@ -8,7 +8,7 @@ cb_transactions = pd.read_excel(f"C:/projects/monthly_income/short_term/ota_mark
 
 merge_col = "Reservation_id"
 
-merged_df = merge_left(cb_reservations, cb_transactions, merge_col)
+merged_df = merge_with_selected_columns(cb_reservations, cb_transactions, merge_col, "Reservation Number", "Res #")
 
 merged_df["lod_tax"] = round(merged_df.apply(lambda row: row["Accommodation Total"] * 0.035 if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
 merged_df["gst"] = round(merged_df.apply(lambda row: (row["lod_tax"] + row["Accommodation Total"]) * 0.05 if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
@@ -111,6 +111,8 @@ merged_df["track"] = ""
 
 merged_df = merged_df.drop(columns=["Lodging Tax", "Good and Services Tax", "Quebec Sales Tax", "check_in_month", "check_out_month", "Status", "Cancelation fee"])
 
+merged_df["Third Party Confirmation Number"] = merged_df["Third Party Confirmation Number"].astype(str)
+
 # merge with booking
 
 booking_reservations = { 
@@ -118,8 +120,9 @@ booking_reservations = {
     # "current": "C:/projects/monthly_income/short_term/sources/reservations/cloudbeds/werfy_luxury_apart_hotel_cloudbeds_reservations.xlsx"
 }
 
-booking_reservations_df = get_combine_excel_file(booking_reservations)
+booking_reservations_df = combine_excel_files(booking_reservations)
+booking_reservations_df["Reservation number"] = booking_reservations_df["Reservation number"].astype(str)
 
-merged_with_booking_df = merge_left(merged_df, booking_reservations_df, "Third Party Confirmation Number", "Third Party Confirmation Number", "Reservation number")
+merged_with_booking_df = merge_with_selected_columns(merged_df, booking_reservations_df, "Third Party Confirmation Number", "Third Party Confirmation Number", "Reservation number", ["Commission amount"])
 
-import_file(merged_with_booking_df, "OTA with debit", "C:/projects/monthly_income/short_term/ota_marketing/")
+import_to_excel(merged_with_booking_df, "OTA with debit", "C:/projects/monthly_income/short_term/ota_marketing/")
