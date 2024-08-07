@@ -92,15 +92,67 @@ def merge_with_selected_columns(left_df, right_df, merge_col_name, left_col_name
     pd.DataFrame: The merged DataFrame.
     """
 
+    # Make copies of the dataframes to avoid modifying the originals
+    left_df_copy = left_df.copy()
+    right_df_copy = right_df.copy()
+
     # Rename the columns in both DataFrames to the merge column name
-    left_df.rename(columns={left_col_name: merge_col_name}, inplace=True)
-    right_df.rename(columns={right_col_name: merge_col_name}, inplace=True)
+    left_df_copy.rename(columns={left_col_name: merge_col_name}, inplace=True)
+    right_df_copy.rename(columns={right_col_name: merge_col_name}, inplace=True)
 
     # If specific columns to keep from the right DataFrame are provided, select only those columns
     if right_cols_to_keep:
-        right_df = right_df[[merge_col_name] + right_cols_to_keep]
+        right_df_copy = right_df_copy[[merge_col_name] + right_cols_to_keep]
 
     # Perform the left merge
-    merged_df = pd.merge(left_df, right_df, on=merge_col_name, how="left")
+    merged_df = pd.merge(left_df_copy, right_df_copy, on=merge_col_name, how="left")
 
     return merged_df
+
+# Define building
+def define_building(row):
+    room = row["Room Number"]
+
+    if room == "Le Clock":
+        return "Le Clock"
+    elif room == "Le Majestic":
+        return "Le Majestic"
+    elif pd.isna(room) or room == "":
+        return "Error"
+    elif room in ["2-4131", "1-4131", "2-4133"]:
+        return "Les Vues de Mont Royal"
+    else:
+        return "Luxury Apart-Hotel"
+    
+# Define crosses
+def define_cross(row, month):
+    check_in = row["check_in_month"]
+    check_out = row["check_out_month"]
+
+    if check_in < month:
+        return "crossover"
+    elif check_out > month:
+        return "crossinto"
+    else:
+        return ""
+    
+# Calculate cleaning fee
+def calculate_cleaning(row):  
+    room_name = str(row["Room Number"])
+    nights_count = row["Nights"]
+    cleaning_flag = 2 if nights_count >= 14 else 1
+
+    if(room_name[-2:] in ["08", "05"]):
+        cleaning = 90
+    elif(room_name[-2:] in ["01", "02", "03", "04", "06", "07", "09"]):
+        cleaning = 50
+    elif(room_name in ["2-4131", "1-4131", "2-4133"]):
+        cleaning = 60
+    elif(room_name == "Le Majestic"):
+        cleaning = 110
+    elif(room_name == "Le Clock"):
+        cleaning = 100
+    else:
+        cleaning = 0
+    
+    return cleaning * cleaning_flag * 1.2 
