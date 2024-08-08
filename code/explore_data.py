@@ -1,8 +1,7 @@
 import pandas as pd
 from helpers import merge_with_selected_columns, define_building, define_cross, calculate_cleaning
-from variables import DATE_FOR_REPORT, EXTERNAL_SOURCE_FILES, TAXES
-
-COLUMN_ORDER = ["Accommodation Total", "Amount Paid", "balance_due", "lodging_tax", "gst", "qst", "Grand Total", "Debit", "Check in Date", "Check out Date", "Nights", "Reservation_id", "Third Party Confirmation Number", "Name", "Room Number", "building", "Source", "Cleaning_+20%", "booking_marketing", "expedia_marketing", "airbnb_marketing", "airbnb_paid", "airbnb_total", "cross", "notes"]
+from variables import DATE_FOR_REPORT, EXTERNAL_SOURCE_FILES, TAXES, COLUMN_ORDER
+from airbnb import process_airbnb_reservations
 
 def load_ota_data():
     """Load data from external sources (Expedia, Booking, Airbnb)."""
@@ -58,6 +57,10 @@ def process_reservations(current_reservations, cb_sum_debit):
     reservations_dfs = list(load_ota_data())
     merged_reservations = merge_reservation_data(reservations_dfs, current_reservations, cb_sum_debit)
     reservations_with_calculations = add_additional_columns(merged_reservations)
-    final_reservation = reorder_columns(reservations_with_calculations, COLUMN_ORDER)
+    reservations = reorder_columns(reservations_with_calculations, COLUMN_ORDER)
 
-    return final_reservation
+    airbnb_temporary_data = process_airbnb_reservations()
+
+    final_reservations = pd.concat([reservations, airbnb_temporary_data], ignore_index=True)
+
+    return final_reservations

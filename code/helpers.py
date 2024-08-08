@@ -137,7 +137,8 @@ def define_cross(row, month):
         return ""
     
 # Calculate cleaning fee
-def calculate_cleaning(row):  
+def calculate_cleaning(row):
+    # FIXME: cleaning_flag should implements only for the hotel
     room_name = str(row["Room Number"])
     nights_count = row["Nights"]
     cleaning_flag = 2 if nights_count >= 14 else 1
@@ -152,6 +153,8 @@ def calculate_cleaning(row):
         cleaning = 110
     elif(room_name == "Le Clock"):
         cleaning = 100
+    elif room_name in ["Studio centre-ville Montreal", "Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Le Petit Penthouse centre-ville Montreal", "Le Chic Nouveau Studio Rénové Centre-ville"]:
+        cleaning = 60
     else:
         cleaning = 0
     

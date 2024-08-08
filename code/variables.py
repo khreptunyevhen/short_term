@@ -51,3 +51,7 @@ TAXES = {
     "gst": 0.05,
     "qst": 0.0975
 }
+
+COLUMN_ORDER = ["Accommodation Total", "Amount Paid", "balance_due", "lodging_tax", "gst", "qst", "Grand Total", "Debit", "Check in Date", "Check out Date", "Nights", "Reservation_id", "Third Party Confirmation Number", "Name", "Room Number", "building", "Source", "Cleaning_+20%", "booking_marketing", "expedia_marketing", "airbnb_marketing", "airbnb_paid", "airbnb_total", "cross", "notes"]
+
+TEMPORARY_AIRBNB_ACCOUNT_COLUMNS_TO_DROP = ["Arriving by date", "Earnings year", "Booking date", "Reference code", "Currency", "Paid out", "Fast Pay fee", "Cleaning fee", "Date", "Occupancy taxes", "Type"]
