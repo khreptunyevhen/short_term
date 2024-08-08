@@ -1,4 +1,5 @@
 import pandas as pd
+from variables import CLEANING_COST
 
 def combine_excel_files(file_paths, columns_to_drop=None):
     """Combine multiple files into one by adding at the bottom"""
@@ -138,23 +139,25 @@ def define_cross(row, month):
     
 # Calculate cleaning fee
 def calculate_cleaning(row):
-    # FIXME: cleaning_flag should implements only for the hotel
     room_name = str(row["Room Number"])
     nights_count = row["Nights"]
-    cleaning_flag = 2 if nights_count >= 14 else 1
+    if row["building"] == "Luxury Apart-Hotel":
+        cleaning_flag = 2 if nights_count >= 14 else 1
+    else:
+        cleaning_flag = 1
 
     if(room_name[-2:] in ["08", "05"]):
-        cleaning = 90
+        cleaning = CLEANING_COST["hotel_2br"]
     elif(room_name[-2:] in ["01", "02", "03", "04", "06", "07", "09"]):
-        cleaning = 50
+        cleaning = CLEANING_COST["hotel_1br"]
     elif(room_name in ["2-4131", "1-4131", "2-4133"]):
-        cleaning = 60
+        cleaning = CLEANING_COST["mont_royal"]
     elif(room_name == "Le Majestic"):
-        cleaning = 110
+        cleaning = CLEANING_COST["le_majestic"]
     elif(room_name == "Le Clock"):
-        cleaning = 100
+        cleaning = CLEANING_COST["le_clock"]
     elif room_name in ["Studio centre-ville Montreal", "Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Le Petit Penthouse centre-ville Montreal", "Le Chic Nouveau Studio Rénové Centre-ville"]:
-        cleaning = 60
+        cleaning = CLEANING_COST["le_main"]
     else:
         cleaning = 0
     

@@ -27,7 +27,7 @@ def filtered_temporary_aibnb_data(data):
 
     # Add columns to match with the main OTA marketing final file
     data["Accommodation Total"] = data["airbnb_paid"]
-    data["Amount Paid"] = data["airbnb_total"]
+    data["Amount Paid"] = data["airbnb_paid"]
     data["balance_due"] = 0
     data["lodging_tax"] = 0
     data["gst"] = 0
