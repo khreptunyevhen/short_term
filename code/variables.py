@@ -1,6 +1,6 @@
 DATE_FOR_REPORT = {
     "year": 2024,
-    "month": 6
+    "month": 7
 }
 
 month = DATE_FOR_REPORT['month']
@@ -42,14 +42,14 @@ CB_TRANSACTION_FILES = {
 
 EXTERNAL_SOURCE_FILES = {
     "expedia": f"{SOURCE_FOLDER}transactions/expedia/expedia_commissions.xlsx",
-    "booking": f"{SOURCE_FOLDER}reservations/booking/booking_current.xlsx",
+    "booking": f"{SOURCE_FOLDER}reservations/booking/booking_current.xls",
     "airbnb": f"{SOURCE_FOLDER}reservations/airbnb/airbnb.csv",
 }
 
 TAXES = {
     "lodging_tax": 0.035,
     "gst": 0.05,
-    "qst": 0.0975
+    "qst": 0.09975
 }
 
 COLUMN_ORDER = ["Accommodation Total", "Amount Paid", "balance_due", "lodging_tax", "gst", "qst", "Grand Total", "Debit", "Check in Date", "Check out Date", "Nights", "Reservation_id", "Third Party Confirmation Number", "Name", "Room Number", "building", "Source", "Cleaning_+20%", "booking_marketing", "expedia_marketing", "airbnb_marketing", "airbnb_paid", "airbnb_total", "cross", "notes"]
@@ -60,7 +60,7 @@ CLEANING_COST = {
     "hotel_1br": 50,
     "hotel_2br": 90,
     "le_clock": 100,
-    "le_majestic": 1100,
+    "le_majestic": 110,
     "le_main": 60,
     "mont_royal": 60,
 }
