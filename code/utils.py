@@ -101,3 +101,50 @@ def duplicate_rows_by_split(data, column_name, separator):
             rows.append(new_row)
 
     return pd.DataFrame(rows)
+
+def import_to_excel(data_frame, name, output_path):
+    """
+    Export a DataFrame to an Excel file.
+
+    This function takes a pandas DataFrame and exports it to an Excel file using the specified file name and output path.
+    The file is saved with a `.xlsx` extension, and the index is not included in the exported file.
+
+    Parameters:
+    - data_frame (pd.DataFrame): The pandas DataFrame to be exported to Excel.
+    - name (str): The name of the Excel file (without the extension). This name will be used as the filename.
+    - output_path (str): The directory path where the Excel file will be saved. The file will be saved at the specified location with the given name.
+
+    Returns:
+    - None: The function saves the DataFrame to an Excel file but does not return any value.
+
+    Notes:
+    - The function uses the `openpyxl` engine to write the Excel file, which must be installed for this function to work.
+    - If the specified output path does not exist, an error will be raised. Ensure that the output path is valid and accessible.
+    - The resulting Excel file will not include the DataFrame's index unless explicitly modified in the function call.
+    """
+
+    data_frame.to_excel(f"{output_path}/{name}.xlsx", engine='openpyxl', index=False)
+
+def convert_to_datetime(row, column_name):
+    """
+    Convert a column in a DataFrame to a datetime format.
+
+    This function takes a pandas DataFrame and a column name as input, then converts the specified column 
+    to a datetime format using the provided date format. The conversion assumes the date format to be 
+    day/month/year (e.g., '22/08/2024').
+
+    Parameters:
+    - data (pd.DataFrame): The DataFrame containing the column to be converted.
+    - column_name (str): The name of the column in the DataFrame that needs to be converted to datetime format.
+
+    Returns:
+    - None: The function modifies the DataFrame in place, converting the specified column to datetime format.
+
+    Notes:
+    - The function uses the format `'%d/%m/%Y'`, which expects the date in the form of day/month/year. 
+      Adjust the format string if the date format differs.
+    - After conversion, the column will contain pandas `datetime64` objects, allowing for further datetime 
+      operations like filtering, extraction of date components (year, month, day), etc.
+    """
+
+    return pd.to_datetime(row[column_name], format='%d/%m/%Y')
