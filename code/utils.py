@@ -125,29 +125,37 @@ def import_to_excel(data_frame, name, output_path):
 
     data_frame.to_excel(f"{output_path}/{name}.xlsx", engine='openpyxl', index=False)
 
-def convert_to_datetime(row, column_name):
+def convert_to_datetime(row, column_name, format):
     """
-    Convert a column in a DataFrame to a datetime format.
-
-    This function takes a pandas DataFrame and a column name as input, then converts the specified column 
-    to a datetime format using the provided date format. The conversion assumes the date format to be 
-    day/month/year (e.g., '22/08/2024').
+    Convert a column in a row to datetime format, handling multiple date formats.
 
     Parameters:
-    - data (pd.DataFrame): The DataFrame containing the column to be converted.
-    - column_name (str): The name of the column in the DataFrame that needs to be converted to datetime format.
+    - row (pd.Series): The row of the DataFrame.
+    - column_name (str): The name of the column to convert.
 
     Returns:
-    - None: The function modifies the DataFrame in place, converting the specified column to datetime format.
-
-    Notes:
-    - The function uses the format `'%d/%m/%Y'`, which expects the date in the form of day/month/year. 
-      Adjust the format string if the date format differs.
-    - After conversion, the column will contain pandas `datetime64` objects, allowing for further datetime 
-      operations like filtering, extraction of date components (year, month, day), etc.
+    - pd.Timestamp: The converted datetime.
     """
 
-    return pd.to_datetime(row[column_name], format='%d/%m/%Y')
+    return pd.to_datetime(row[column_name], format=format)
+
+def drop_columns(df, columns_to_drop):
+    """
+    Drop specified columns from the DataFrame.
+
+    This function removes columns from the DataFrame based on the list provided. If a column specified in the list does not exist in the DataFrame, it will be ignored without raising an error.
+
+    Parameters:
+    - df (pd.DataFrame): The DataFrame from which columns need to be removed.
+    - columns_to_drop (list of str): A list of column names to be dropped from the DataFrame.
+
+    Returns:
+    - pd.DataFrame: A DataFrame with the specified columns removed.
+    """
+
+    df = df.drop(columns=columns_to_drop, errors="ignore")
+
+    return df
 
 # Functions for columns formatting
 

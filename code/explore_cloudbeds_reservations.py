@@ -1,9 +1,9 @@
 import pandas as pd
-from utils import combine_excel_files, filter_by_month, filter_by_status, duplicate_rows_by_split, convert_to_datetime, format_to_text
+from utils import combine_excel_files, filter_by_month, filter_by_status, duplicate_rows_by_split, convert_to_datetime, format_to_text, import_to_excel, drop_columns
 from settings.env import CB_RESERVATIONS
 from settings.constants import CB_COLUMNS_TO_DROP, DATE_FOR_REPORT
 
-def process_files(files, statuses, drop_columns, month):
+def process_files(files, statuses, columns_to_drop, month):
     """
     Process multiple files by combining, cleaning, filtering, and formatting the data.
 
@@ -19,19 +19,19 @@ def process_files(files, statuses, drop_columns, month):
     
     combined_df = combine_excel_files(files)
 
-    combined_df["Check in Date"] = combined_df.apply(convert_to_datetime, axis=1, column_name="Check in Date")
-    combined_df["Check out Date"] = combined_df.apply(convert_to_datetime, axis=1, column_name="Check out Date")
+    combined_df["Check in Date"] = combined_df.apply(convert_to_datetime, axis=1, column_name="Check in Date", format='%d/%m/%Y')
+    combined_df["Check out Date"] = combined_df.apply(convert_to_datetime, axis=1, column_name="Check out Date", format='%d/%m/%Y')
 
     filtered_status_df = filter_by_status(combined_df, statuses)
     filtered_month_df = filter_by_month(filtered_status_df, month)
 
     splitted_df = duplicate_rows_by_split(filtered_month_df, "Room Number", ", ")
 
-    splitted_df = splitted_df.drop(columns=drop_columns, errors="ignore")
+    splitted_df = drop_columns(splitted_df, columns_to_drop)
 
     # Format to text
     splitted_df = format_to_text(splitted_df, "Reservation Number")
 
     return splitted_df
 
-splitted = process_files(CB_RESERVATIONS, ["Checked Out", "In-House", "Confirmed"], CB_COLUMNS_TO_DROP, DATE_FOR_REPORT["month"])
+cloudbeds_reservations_df = process_files(CB_RESERVATIONS, ["Checked Out", "In-House", "Confirmed"], CB_COLUMNS_TO_DROP, DATE_FOR_REPORT["month"])
