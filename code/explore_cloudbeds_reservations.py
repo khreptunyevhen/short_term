@@ -1,5 +1,5 @@
 import pandas as pd
-from utils import combine_excel_files, filter_by_month, filter_by_status, duplicate_rows_by_split, convert_to_datetime
+from utils import combine_excel_files, filter_by_month, filter_by_status, duplicate_rows_by_split, convert_to_datetime, format_to_text
 from settings.env import CB_RESERVATIONS
 from settings.constants import CB_COLUMNS_TO_DROP, DATE_FOR_REPORT
 
@@ -28,6 +28,9 @@ def process_files(files, statuses, drop_columns, month):
     splitted_df = duplicate_rows_by_split(filtered_month_df, "Room Number", ", ")
 
     splitted_df = splitted_df.drop(columns=drop_columns, errors="ignore")
+
+    # Format to text
+    splitted_df = format_to_text(splitted_df, "Reservation Number")
 
     return splitted_df
 

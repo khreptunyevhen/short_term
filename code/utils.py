@@ -148,3 +148,20 @@ def convert_to_datetime(row, column_name):
     """
 
     return pd.to_datetime(row[column_name], format='%d/%m/%Y')
+
+# Functions for columns formatting
+
+def format_to_text(df, column_name):
+    """
+    Standardize text in a column (e.g., trim whitespace, convert to uppercase).
+
+    Parameters:
+    - df (pd.DataFrame): The DataFrame containing the column to format.
+    - column_name (str): The name of the column to standardize.
+
+    Returns:
+    - pd.DataFrame: The DataFrame with the specified column standardized.
+    """
+    df[column_name] = df[column_name].astype(str).str.strip()
+
+    return df
