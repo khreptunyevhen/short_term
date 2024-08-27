@@ -37,6 +37,11 @@ def process_files(df, rename_columns, columns_to_drop, month):
     # Drop specified columns
     df_filtered = drop_columns(df_filtered, columns_to_drop)
 
+    # Add extra columns
+    df_filtered["Source"] = "Airbnb (API)"
+    df_filtered["Amount Paid"] = df_filtered["Grand Total"] - df_filtered["Airbnb marketing"]
+    df_filtered["Reservation Number"] = "Airbnb (API) Stefan" + " " + df_filtered["Third Party Confirmation Number"]
+
     return df_filtered
 
 temp_airbnb_reservations_df = process_files(df, RENAME_AIRBNB_COLUMNS, TEMP_AIRBNB_COLUMNS_TO_DROP, DATE_FOR_REPORT["month"])
