@@ -1,4 +1,5 @@
 import pandas as pd
+from settings.constants import CLEANING_COST
 
 def combine_excel_files(files):
     """
@@ -187,8 +188,110 @@ def extract_columns(source_id, extract_columns, rename_columns=None, data=None):
     columns_to_merge[source_id] = columns_to_merge[source_id].astype(str)
 
     return columns_to_merge
-# Functions for columns formatting
 
+def define_building(row):
+    """
+    Assign a building name based on the room number.
+
+    This function takes a row from a DataFrame and checks the value in the "Room Number" column. It returns a specific building name based on predefined conditions. The building names are assigned as follows:
+
+    - "Le Clock" if the room number is "Le Clock".
+    - "Le Majestic" if the room number is "Le Majestic".
+    - "No name" if the room number is missing (NaN) or an empty string.
+    - "Les Vues de Mont Royal" for specific room numbers: "2-4131", "1-4131", "2-4133".
+    - "Le Main" for specific descriptive room names related to the city center.
+    - "Luxury Apart-Hotel" as a default category for all other room numbers.
+
+    Parameters:
+    - row (pd.Series): A row of the DataFrame containing the "Room Number" column.
+
+    Returns:
+    - str: The building name corresponding to the room number.
+    """
+
+    room = row["Room Number"]
+
+    if room == "Le Clock":
+        return "Le Clock"
+    elif room == "Le Majestic":
+        return "Le Majestic"
+    elif pd.isna(room) or room == "":
+        return "No name"
+    elif room in ["2-4131", "1-4131", "2-4133"]:
+        return "Les Vues de Mont Royal"
+    elif room in ["Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Chic Nouveau Studio Rénové Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Studio centre-ville Montreal"]:
+        return "Le Main"
+    else:
+        return "Luxury Apart-Hotel"
+    
+def define_cross(row, month):
+    """
+    Check if a reservation crosses over into a new month or crosses out of a month.
+
+    Parameters:
+    - row (pd.Series): A row from a DataFrame containing 'Check in Date' and 'Check out Date'.
+    - month (int): The month number to check against (1 for January, 12 for December).
+
+    Returns:
+    - str: Returns 'crossover' if the reservation starts in a previous month, 'crossinto' if the reservation ends in a later month, otherwise returns an empty string.
+    """
+
+    check_in_month = row["Check in Date"].month
+    check_out_month = row["Check out Date"].month
+
+    if check_in_month < month:
+        return "crossover"
+    elif check_out_month > month:
+        return "crossinto"
+    else:
+        return ""
+    
+def calculate_cleaning(row):
+    """
+    Calculate the cleaning cost based on the room number and the length of stay.
+
+    This function calculates the cleaning cost for a room based on the room number, the number of nights stayed, and the building category. The calculation follows these rules:
+
+    - The cleaning flag is set to 2 if the building is "Luxury Apart-Hotel" and the stay is 14 nights or more; otherwise, it is set to 1.
+    - Cleaning costs are determined based on the room number suffix or specific room names:
+        - For room numbers ending in "08" or "05", the cost is based on "hotel_2br".
+        - For room numbers ending in "01", "02", "03", "04", "06", "07", or "09", the cost is based on "hotel_1br".
+        - Specific room numbers ("2-4131", "1-4131", "2-4133") use the cost for "mont_royal".
+        - Specific room names ("Le Majestic", "Le Clock", etc.) use their respective costs.
+        - All other room numbers are set to a cleaning cost of 0.
+
+    Parameters:
+    - row (pd.Series): A row of the DataFrame containing "Room Number", "Nights", and "building" columns.
+
+    Returns:
+    - float: The total cleaning cost, adjusted by the cleaning flag.
+    """
+
+    room_name = str(row["Room Number"])
+    nights_count = row["Nights"]
+    if row["Building"] == "Luxury Apart-Hotel":
+        cleaning_flag = 2 if nights_count >= 14 else 1
+    else:
+        cleaning_flag = 1
+
+    if(room_name[-2:] in ["08", "05"]):
+        cleaning = CLEANING_COST["hotel_2br"]
+    elif(room_name[-2:] in ["01", "02", "03", "04", "06", "07", "09"]):
+        cleaning = CLEANING_COST["hotel_1br"]
+    elif(room_name in ["2-4131", "1-4131", "2-4133"]):
+        cleaning = CLEANING_COST["mont_royal"]
+    elif(room_name == "Le Majestic"):
+        cleaning = CLEANING_COST["le_majestic"]
+    elif(room_name == "Le Clock"):
+        cleaning = CLEANING_COST["le_clock"]
+    elif room_name in ["Studio centre-ville Montreal", "Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Le Petit Penthouse centre-ville Montreal", "Le Chic Nouveau Studio Rénové Centre-ville"]:
+        cleaning = CLEANING_COST["le_main"]
+    else:
+        cleaning = 0
+    
+    return cleaning * cleaning_flag
+
+# Functions for columns formatting
 def format_to_text(df, column_name):
     """
     Standardize text in a column (e.g., trim whitespace, convert to uppercase).
