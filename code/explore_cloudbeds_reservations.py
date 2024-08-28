@@ -1,7 +1,6 @@
-import pandas as pd
 from utils import combine_excel_files, filter_by_month, filter_by_status, duplicate_rows_by_split, convert_to_datetime, format_to_text, import_to_excel, drop_columns
-from settings.env import CB_RESERVATIONS
-from settings.constants import CB_COLUMNS_TO_DROP, DATE_FOR_REPORT
+from settings.env import SOURCE_FILE_PATH
+from settings.constants import COLUMNS_TO_DROP, DATE_FOR_REPORT, IDS
 
 def process_files(files, statuses, columns_to_drop, month):
     """
@@ -30,8 +29,8 @@ def process_files(files, statuses, columns_to_drop, month):
     splitted_df = drop_columns(splitted_df, columns_to_drop)
 
     # Format to text
-    splitted_df = format_to_text(splitted_df, "Reservation Number")
+    splitted_df = format_to_text(splitted_df, IDS["cloudbeds"])
 
     return splitted_df
 
-cloudbeds_reservations_df = process_files(CB_RESERVATIONS, ["Checked Out", "In-House", "Confirmed"], CB_COLUMNS_TO_DROP, DATE_FOR_REPORT["month"])
+cloudbeds_reservations_df = process_files(SOURCE_FILE_PATH["cloudbeds_reservations"], ["Checked Out", "In-House", "Confirmed"], COLUMNS_TO_DROP["cloudbeds_reservations"], DATE_FOR_REPORT["month"])

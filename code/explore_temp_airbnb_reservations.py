@@ -1,10 +1,9 @@
 import pandas as pd
-import numpy as np
-from utils import import_to_excel, filter_by_month, convert_to_datetime, drop_columns
-from settings.env import AIRBNB_RESERVATIONS
-from settings.constants import RENAME_AIRBNB_COLUMNS, TEMP_AIRBNB_COLUMNS_TO_DROP, DATE_FOR_REPORT
+from utils import filter_by_month, convert_to_datetime, drop_columns
+from settings.env import SOURCE_FILE_PATH
+from settings.constants import COLUMNS_TO_RENAME, COLUMNS_TO_DROP, DATE_FOR_REPORT, IDS
 
-df = pd.read_csv(AIRBNB_RESERVATIONS[1])
+df = pd.read_csv(SOURCE_FILE_PATH["airbnb_reservations"][1])
 
 def process_files(df, rename_columns, columns_to_drop, month):
     """
@@ -24,9 +23,6 @@ def process_files(df, rename_columns, columns_to_drop, month):
     df["Start date"] = df.apply(convert_to_datetime, axis=1, column_name="Start date", format='%m/%d/%Y')
     df["End date"] = df.apply(convert_to_datetime, axis=1, column_name="End date", format='%m/%d/%Y')
 
-    # Create notes for non-reservation types
-    df['notes'] = np.where(df['Type'] != 'Reservation', df['Type'].astype(str) + " - " + df['Details'].astype(str), np.nan)
-
     # Rename columns
     df = df.rename(columns=rename_columns)
 
@@ -40,8 +36,10 @@ def process_files(df, rename_columns, columns_to_drop, month):
     # Add extra columns
     df_filtered["Source"] = "Airbnb (API)"
     df_filtered["Amount Paid"] = df_filtered["Grand Total"] - df_filtered["Airbnb marketing"]
-    df_filtered["Reservation Number"] = "Airbnb (API) Stefan" + " " + df_filtered["Third Party Confirmation Number"]
+    df_filtered[IDS["cloudbeds"]] = "Airbnb (API) Stefan" + " " + df_filtered[IDS["third_party"]]
+
+    df_filtered = df_filtered.drop(columns=["Airbnb marketing"], errors="ignore")
 
     return df_filtered
 
-temp_airbnb_reservations_df = process_files(df, RENAME_AIRBNB_COLUMNS, TEMP_AIRBNB_COLUMNS_TO_DROP, DATE_FOR_REPORT["month"])
+temp_airbnb_reservations_df = process_files(df, COLUMNS_TO_RENAME["temp_account_airbnb_invoice"], COLUMNS_TO_DROP["temp_account_airbnb"], DATE_FOR_REPORT["month"])

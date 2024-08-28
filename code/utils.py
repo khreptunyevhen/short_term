@@ -157,6 +157,36 @@ def drop_columns(df, columns_to_drop):
 
     return df
 
+def extract_columns(source_id, extract_columns, rename_columns=None, data=None):
+    """
+    Extract specific columns from a DataFrame or an Excel file path, rename columns if specified, and convert a column to a string type.
+
+    Parameters:
+    - source_id (str): The name of the column to be converted to a string.
+    - extract_columns (list of str): A list of column names to be extracted.
+    - rename_columns (dict, optional): A dictionary for renaming columns in the format {'old_name': 'new_name'}.
+    - data (pd.DataFrame or str): A DataFrame to extract columns from or a string path to an Excel file.
+
+    Returns:
+    - pd.DataFrame: A DataFrame containing the extracted columns with the specified source ID column converted to a string type.
+    """
+
+    # Check if `data` is a file path (str) or a DataFrame
+    if isinstance(data, str):
+        df = pd.read_excel(data)
+    elif isinstance(data, pd.DataFrame):
+        df = data
+    else:
+        raise ValueError("The 'data' parameter must be either a file path (str) or a DataFrame.")
+    
+    if rename_columns:
+        df = df.rename(columns=rename_columns)
+
+    columns_to_merge = df.loc[:, extract_columns]
+
+    columns_to_merge[source_id] = columns_to_merge[source_id].astype(str)
+
+    return columns_to_merge
 # Functions for columns formatting
 
 def format_to_text(df, column_name):
