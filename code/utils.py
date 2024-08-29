@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from settings.constants import CLEANING_COST
 
 def combine_excel_files(files):
@@ -103,7 +104,7 @@ def duplicate_rows_by_split(data, column_name, separator):
 
     return pd.DataFrame(rows)
 
-def import_to_excel(data_frame, name, output_path):
+def import_to_excel(data_frame, name, output_path, year, month):
     """
     Export a DataFrame to an Excel file.
 
@@ -124,7 +125,13 @@ def import_to_excel(data_frame, name, output_path):
     - The resulting Excel file will not include the DataFrame's index unless explicitly modified in the function call.
     """
 
-    data_frame.to_excel(f"{output_path}/{name}.xlsx", engine='openpyxl', index=False)
+    path = os.path.join(output_path, str(year), month)
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    file_path = os.path.join(path, f"{name}.xlsx")
+    data_frame.to_excel(file_path, engine='openpyxl', index=False)
 
 def convert_to_datetime(row, column_name, format):
     """

@@ -5,8 +5,6 @@ from explore_airbnb_reservations import airbnb_columns_to_merge
 from explore_booking_reservations import booking_columns_to_merge
 from explore_expedia_reservations import expedia_columns_to_merge
 from explore_vrbo_reservations import vrbo_columns_to_merge
-from utils import import_to_excel
-from settings.env import OUTPUT_FILE_PATH
 from settings.constants import IDS
 
 def merge_dfs(base_df, columns_to_merge_list, merge_key):
