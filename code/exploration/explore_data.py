@@ -35,6 +35,7 @@ def add_additional_columns(data):
     data["Building"] = data.apply(define_building, axis=1)
     data["Cross"] = data.apply(define_cross, axis=1, args=(DATE_FOR_REPORT["month"],))
     data["Cleaning"] = data.apply(calculate_cleaning, axis=1)
+    # FIXME: Calculate total
     data["Total marketing (no Airbnb)"] = data["Booking marketing"] + data["Expedia marketing"] + data["VRBO marketing"]
 
     return data
