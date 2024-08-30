@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from settings.constants import CLEANING_COST
+from settings.params import CLEANING_COST
 
 def combine_excel_files(files):
     """

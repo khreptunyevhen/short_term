@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+short_term_project.egg-info/
 
 # Data folders
 ota_marketing/
@@ -7,3 +8,4 @@ sources/
 
 # The env file
 code/settings/env.py
+code/settings/params.py

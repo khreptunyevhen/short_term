@@ -69,3 +69,5 @@ def create_final_reservations():
     reservations_df = reorder_columns(reservations_df, COLUMN_ORDER)
 
     return reservations_df
+
+co = "co"

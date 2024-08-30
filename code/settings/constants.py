@@ -56,13 +56,4 @@ TAXES = {
     "qst": 0.09975
 }
 
-CLEANING_COST = {
-    "hotel_1br": 50,
-    "hotel_2br": 90,
-    "le_clock": 100,
-    "le_majestic": 110,
-    "le_main": 60,
-    "mont_royal": 60,
-}
-
 COLUMN_ORDER = ["Accommodation Total", "Amount Paid", "Balance Due", "Lodging Tax", "GST", "QST", "Grand Total", "Check in Date", "Check out Date", "Nights", "Reservation Number", "Third Party Confirmation Number", "Name", "Room Number", "Building", "Source", "Cleaning", "Booking marketing", "Expedia marketing", "Airbnb marketing", "VRBO marketing", "Total marketing (no Airbnb)", "Cross", "Notes"]
