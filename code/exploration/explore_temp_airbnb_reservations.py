@@ -36,6 +36,7 @@ def process_files(df, rename_columns, columns_to_drop, month):
     # Add extra columns
     df_filtered["Source"] = "Airbnb (API)"
     df_filtered["Amount Paid"] = df_filtered["Grand Total"] - df_filtered["Airbnb marketing"]
+    df_filtered["Grand Total"] -= df_filtered["Airbnb marketing"]
     df_filtered[IDS["cloudbeds"]] = "Airbnb (API) Stefan" + " " + df_filtered[IDS["third_party"]]
 
     df_filtered = df_filtered.drop(columns=["Airbnb marketing"], errors="ignore")

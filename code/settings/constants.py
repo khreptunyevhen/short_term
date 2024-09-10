@@ -1,6 +1,6 @@
 DATE_FOR_REPORT = {
     "year": 2024,
-    "month": 7
+    "month": 8
 }
 
 COLUMNS_TO_DROP = {

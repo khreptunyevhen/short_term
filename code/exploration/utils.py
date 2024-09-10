@@ -226,7 +226,7 @@ def define_building(row):
         return "No name"
     elif room in ["2-4131", "1-4131", "2-4133"]:
         return "Les Vues de Mont Royal"
-    elif room in ["Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Chic Nouveau Studio Rénové Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Studio centre-ville Montreal"]:
+    elif room in ["Le Moderne Nouveau Studio Rénové Centre-ville", "Loft sur la Main-Cœur de Montréal Centre-ville", "Le Chic Nouveau Studio Rénové Centre-ville", "Le Loft Trendy centre-ville de Montréal", "Studio centre-ville Montreal", "Le Petit Penthouse centre-ville Montreal"]:
         return "Le Main"
     else:
         return "Luxury Apart-Hotel"

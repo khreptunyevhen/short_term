@@ -24,19 +24,15 @@ def add_additional_columns(data):
     """
 
     # Calculate taxes
-    # FIXME: Messed up with QST and GST should be changed
     data["Lodging Tax"] = round(data.apply(lambda row: row["Accommodation Total"] * TAXES["lodging_tax"] if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
-    data["GST"] = round(data.apply(lambda row: (row["Lodging Tax"] + row["Accommodation Total"]) * TAXES["qst"] if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
-    data["QST"] = round(data.apply(lambda row: (row["Lodging Tax"] + row["Accommodation Total"]) * TAXES["gst"] if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
+    data["GST"] = round(data.apply(lambda row: (row["Lodging Tax"] + row["Accommodation Total"]) * TAXES["gst"] if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
+    data["QST"] = round(data.apply(lambda row: (row["Lodging Tax"] + row["Accommodation Total"]) * TAXES["qst"] if row["Source"] != "Airbnb (API)" else 0, axis=1), 2)
 
     # Add additional columns
-    # FIXME: Grand total = Gross earning - Service Fee
     data["Balance Due"] = round(data["Accommodation Total"] + data["Lodging Tax"] + data["GST"] + data["QST"] - data["Grand Total"], 2)
     data["Building"] = data.apply(define_building, axis=1)
     data["Cross"] = data.apply(define_cross, axis=1, args=(DATE_FOR_REPORT["month"],))
     data["Cleaning"] = data.apply(calculate_cleaning, axis=1)
-    # FIXME: Calculate total
-    data["Total marketing (no Airbnb)"] = data["Booking marketing"] + data["Expedia marketing"] + data["VRBO marketing"]
 
     return data
 
